@@ -1,7 +1,7 @@
 <?php
 
 return [
-    'test_directories' => [
-        'tests/Browser' => 'Tests\\Browser',
+    'test-directories' => [
+         'Tests\\Browser' => base_path('tests/Browser')
     ],
 ];

@@ -11,6 +11,11 @@ use Livewire\Livewire;
 
 class LivewireDuskExtensionServiceProvider extends ServiceProvider
 {
+    public function register()
+    {
+        $this->mergeConfigFrom(__DIR__.'/../config/livewire-dusk-extension.php', 'livewire-dusk-extension');
+    }
+
     public function boot()
     {
         Route::get('/livewire-dusk/{component}', function ($component) {

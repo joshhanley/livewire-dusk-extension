@@ -1,0 +1,35 @@
+{
+    "name": "joshhanley/livewire-dusk-extension",
+    "description": "A Laravel Dusk testing helper extension for testing Livewire components.",
+    "license": "MIT",
+    "authors": [
+        {
+            "name": "Josh Hanley",
+            "email": "josh@joshhanley.com.au"
+        }
+    ],
+    "require": {
+        "php": "^7.4|^8.0",
+        "livewire/livewire": "^2.3|dev-master",
+        "laravel/dusk": "^7.0|dev-master"
+    },
+    "autoload": {
+        "psr-4": {
+            "LivewireDuskExtension\\": "src/"
+        }
+    },
+    "autoload-dev": {
+        "psr-4": {
+            "LivewireDuskExtension\\Tests\\": "tests/"
+        }
+    },
+    "extra": {
+        "laravel": {
+            "providers": [
+                "LivewireDuskExtension\\LivewireDuskExtensionServiceProvider"
+            ]
+        }
+    },
+    "minimum-stability": "dev",
+    "prefer-stable": true
+}

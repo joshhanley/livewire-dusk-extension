@@ -15,8 +15,14 @@ abstract class LivewireDuskExtensionTestCase extends DuskTestCase
 
         Browser::mixin(new DuskBrowserMacros());
 
-        Browser::macro('livewire', function ($class, $queryString = '') {
-            return Livewire::visit($this, $class, $queryString);
+        Browser::macro('livewire', function (string $class, array $parameters = [], array $queryString = []) {
+            if (!empty($parameters)) {
+                $queryString['parameters'] = $parameters;
+            }
+
+            $compiledQueryString = '?' . http_build_query($queryString);
+
+            return Livewire::visit($this, $class, $compiledQueryString);
         });
     }
 }

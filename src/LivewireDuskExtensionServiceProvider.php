@@ -6,7 +6,8 @@ use Illuminate\Support\Facades\File;
 use Illuminate\Support\Facades\Route;
 use Illuminate\Support\ServiceProvider;
 use Illuminate\Support\Str;
-use Livewire\Component;
+use Livewire\Component as LivewireComponent;
+use Livewire\LifecycleManager;
 use Livewire\Livewire;
 
 class LivewireDuskExtensionServiceProvider extends ServiceProvider
@@ -22,10 +23,37 @@ class LivewireDuskExtensionServiceProvider extends ServiceProvider
             __DIR__.'/../config/livewire-dusk-extension.php' => config_path('livewire-dusk-extension.php'),
         ]);
 
+        LivewireComponent::macro('mountInvokableComponent', function ($class, $componentParams) {
+            $instance = new $class();
+
+            $manager = LifecycleManager::fromInitialInstance($instance)
+                ->boot()
+                ->initialHydrate()
+                ->mount($componentParams)
+                ->renderToView();
+
+            if ($instance->redirectTo) {
+                return redirect()->response($instance->redirectTo);
+            }
+
+            $instance->ensureViewHasValidLivewireLayout($instance->preRenderedView);
+
+            $layout = $instance->preRenderedView->livewireLayout;
+
+            return app('view')->file(base_path("vendor/livewire/livewire/src/Macros/livewire-view-{$layout['type']}.blade.php"), [
+                'view' => $layout['view'],
+                'params' => $layout['params'],
+                'slotOrSection' => $layout['slotOrSection'],
+                'manager' => $manager,
+            ]);
+        });
+
         Route::get('/livewire-dusk/{component}', function ($component) {
             $class = urldecode($component);
 
-            return app()->call(new $class());
+            $parameters = request()->get('parameters');
+
+            return LivewireComponent::mountInvokableComponent($class, $parameters);
         })->middleware('web');
 
         foreach (config('livewire-dusk-extension.test-directories') as $namespace => $directory) {

@@ -57,17 +57,17 @@ Then open the config and update the `test-directories` array with your tests nam
 
 ### Create a Test
 
-You can now create a dusk test that uses `Livewire::visit()` to test your component.
+You can now create a dusk test that uses `$browser->livewire()` to test your component.
 
-To do this, pass the `$browser` object and the class name of the component you want to test into the `Livewire::visit()` method.
+To do this, pass the class name of the component you want to test into the `$browser->livewire()` method.
 
-Then you can chain assertions from the `visit()` call.
+Then you can chain assertions from the `livewire()` call.
 
 ```php
 public function testExample()
 {
     $this->browse(function (Browser $browser) {
-        Livewire::visit($browser, SampleComponent::class)
+        $browser->livewire(SampleComponent::class)
             ->assertSee('Sample!');
     });
 }

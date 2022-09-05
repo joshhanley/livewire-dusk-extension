@@ -18,6 +18,10 @@ class LivewireDuskExtensionServiceProvider extends ServiceProvider
 
     public function boot()
     {
+        $this->publishes([
+            __DIR__.'/../config/livewire-dusk-extension.php' => config_path('livewire-dusk-extension.php'),
+        ]);
+
         Route::get('/livewire-dusk/{component}', function ($component) {
             $class = urldecode($component);
 

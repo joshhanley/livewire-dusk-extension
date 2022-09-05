@@ -51,7 +51,7 @@ Then open the config and update the `test-directories` array with your tests nam
 
 ```php
 'test-directories' => [
-    'My\\Custom\\Namespace => base_path('my/custom/namespace'),
+    'My\\Custom\\Namespace' => base_path('my/custom/namespace'),
 ],
 ```
 

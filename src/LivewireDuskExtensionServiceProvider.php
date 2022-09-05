@@ -24,23 +24,20 @@ class LivewireDuskExtensionServiceProvider extends ServiceProvider
             return app()->call(new $class());
         })->middleware('web');
 
-        $testComponents = $this->generateTestComponentsClassList();
+        foreach (config('livewire-dusk-extension.test-directories') as $namespace => $directory) {
+            $testComponents = $this->generateTestComponentsClassList($directory, $namespace);
 
-        $testComponents->each(function ($componentClass) {
-            Livewire::component($componentClass);
-        });
+            $testComponents->each(function ($componentClass) {
+                Livewire::component($componentClass);
+            });
+        }
     }
 
-    protected function getTestsDirectory()
+    protected function generateTestComponentsClassList($directory, $namespace)
     {
-        return base_path('tests/Browser');
-    }
-
-    protected function generateTestComponentsClassList()
-    {
-        return collect(File::allFiles($this->getTestsDirectory()))
-            ->map(function ($file) {
-                return $this->generateClassNameFromFile($file);
+        return collect(File::allFiles($directory))
+            ->map(function ($file) use ($namespace) {
+                return $this->generateClassNameFromFile($file, $namespace);
             })
             ->filter(function ($computedClassName) {
                 return class_exists($computedClassName);
@@ -50,13 +47,8 @@ class LivewireDuskExtensionServiceProvider extends ServiceProvider
             });
     }
 
-    protected function generateClassNameFromFile($file)
+    protected function generateClassNameFromFile($file, $namespace)
     {
-        return $this->getTestsNamespace().'\\'. Str::of($file->getRelativePathname())->before('.php')->replace('/', '\\');
-    }
-
-    public function getTestsNamespace()
-    {
-        return 'Tests\\Browser';
+        return $namespace.'\\'. Str::of($file->getRelativePathname())->before('.php')->replace('/', '\\');
     }
 }

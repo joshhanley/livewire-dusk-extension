@@ -23,6 +23,14 @@ class LivewireDuskExtensionServiceProvider extends ServiceProvider
             __DIR__.'/../config/livewire-dusk-extension.php' => config_path('livewire-dusk-extension.php'),
         ]);
 
+        foreach (config('livewire-dusk-extension.test-directories') as $namespace => $directory) {
+            $testComponents = $this->generateTestComponentsClassList($directory, $namespace);
+
+            $testComponents->each(function ($componentClass) {
+                Livewire::component($componentClass);
+            });
+        }
+
         LivewireComponent::macro('mountInvokableComponent', function ($class, $componentParams) {
             $instance = new $class();
 
@@ -55,14 +63,6 @@ class LivewireDuskExtensionServiceProvider extends ServiceProvider
 
             return LivewireComponent::mountInvokableComponent($class, $parameters);
         })->middleware('web');
-
-        foreach (config('livewire-dusk-extension.test-directories') as $namespace => $directory) {
-            $testComponents = $this->generateTestComponentsClassList($directory, $namespace);
-
-            $testComponents->each(function ($componentClass) {
-                Livewire::component($componentClass);
-            });
-        }
     }
 
     protected function generateTestComponentsClassList($directory, $namespace)

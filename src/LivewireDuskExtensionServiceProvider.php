@@ -75,7 +75,7 @@ class LivewireDuskExtensionServiceProvider extends ServiceProvider
                 return class_exists($computedClassName);
             })
             ->filter(function ($class) {
-                return is_subclass_of($class, Component::class);
+                return is_subclass_of($class, LivewireComponent::class);
             });
     }
 
